@@ -1,0 +1,41 @@
+#pragma once
+
+#include "../CompilerPass.h"
+#include "../AST/astVisitor.h"
+#include "../AST/astNode.h"
+
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/Target/TargetMachine.h>
+
+struct LLLVMExprResult
+{
+    llvm::Value *value = nullptr;
+    SymbolTableEntry *entry = nullptr;
+
+};
+
+
+class IRGenerator : public ASTVisitor,public CompilerPass{
+public:
+    explicit IRGenerator(SourceFile *sourceFile) : CompilerPass(sourceFile), context (sourceFile->context), llvmModule(sourceFile->llvmModule.get()) {}
+
+    std::any visitEntry(ASTEntryNode *node) override;
+    std::any visitDeclStmt(ASTDeclStmtNode *node) override;
+    std::any visitAdditiveExpr(ASTAdditiveExprNode *node) override;
+    std::any visitMultiplicativeExpr(ASTMultiplicativeExprNode *node) override;
+    std::any visitConstant(ASTConstantNode *node);
+    std::any visitPrintCall(ASTPrintCallNode *node);
+    std::any visitDataType(ASTDataTypeNode *node);
+    
+    std::string getIRString() const;
+
+private:
+    llvm::LLVMContext &context;
+    llvm::IRBuilder<> builder = llvm::IRBuilder<>(context);
+    llvm::Module *llvmModule;
+    llvm::BasicBlock *entryBlock;
+    llvm::Value *insertAlloca(llvm::Type *llvmType,const std::string &varName = "");
+    llvm::Function *getPrintfFct();
+    llvm::Function *getFunction(const char *funcName,llvm::Type *returnType,llvm::ArrayRef<llvm::Type *> args,bool varArg) const;
+};

@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "/home/continental/desktop/projects/the-love-lang/**",
+        "/usr/lib/llvm-18/include" 
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++", 
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "linux-clang-x64"
+    }
+  ],
+  "version": 4
+}
