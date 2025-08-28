@@ -11,9 +11,10 @@ struct ExprResult
     SymbolTableEntry *entry = nullptr;
 };
 
-class TypeChecker : public CompilerPass,ASTVisitor{
+class TypeChecker : private CompilerPass,public ASTVisitor{
 public:
     explicit TypeChecker(SourceFile *sourceFile) : CompilerPass(sourceFile) {};
+    
     std::any visitDeclStmt(ASTDeclStmtNode *node) override;
     std::any visitAdditiveExpr(ASTAdditiveExprNode *node) override;
     std::any visitMultiplicativeExpr(ASTMultiplicativeExprNode *node) override;

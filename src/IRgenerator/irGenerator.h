@@ -8,7 +8,7 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/Target/TargetMachine.h>
 
-struct LLLVMExprResult
+struct LLVMExprResult
 {
     llvm::Value *value = nullptr;
     SymbolTableEntry *entry = nullptr;
@@ -24,9 +24,10 @@ public:
     std::any visitDeclStmt(ASTDeclStmtNode *node) override;
     std::any visitAdditiveExpr(ASTAdditiveExprNode *node) override;
     std::any visitMultiplicativeExpr(ASTMultiplicativeExprNode *node) override;
-    std::any visitConstant(ASTConstantNode *node);
-    std::any visitPrintCall(ASTPrintCallNode *node);
-    std::any visitDataType(ASTDataTypeNode *node);
+    std::any visitConstant(ASTConstantNode *node) override;
+    std::any visitPrintCall(ASTPrintCallNode *node) override;
+    std::any visitDataType(ASTDataTypeNode *node) override;
+    std::any visitAtomicExpr(ASTAtomicExprNode *node) override;
     
     std::string getIRString() const;
 
@@ -35,6 +36,7 @@ private:
     llvm::IRBuilder<> builder = llvm::IRBuilder<>(context);
     llvm::Module *llvmModule;
     llvm::BasicBlock *entryBlock;
+    
     llvm::Value *insertAlloca(llvm::Type *llvmType,const std::string &varName = "");
     llvm::Function *getPrintfFct();
     llvm::Function *getFunction(const char *funcName,llvm::Type *returnType,llvm::ArrayRef<llvm::Type *> args,bool varArg) const;

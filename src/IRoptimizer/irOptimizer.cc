@@ -4,7 +4,9 @@
 
 void IROptimizer::prepare(){
     passBuilder = std::make_unique<llvm::PassBuilder>(targetMachine);
-    functionAnalysisMgr.registerPass([&] {return passBuilder->buildDefaultAAPipeline();});
+    functionAnalysisMgr.registerPass([&]{
+        return passBuilder->buildDefaultAAPipeline();
+    });
 
     passBuilder->registerModuleAnalyses(moduleAnalysisMgr);
     passBuilder->registerCGSCCAnalyses(cgsccAnalysisMgr);
@@ -16,6 +18,9 @@ void IROptimizer::prepare(){
 }
 void IROptimizer::optimize(){
     assert(passBuilder!=nullptr);
+
+    // run passes
+
     llvm::OptimizationLevel llvmOptLevel = llvm::OptimizationLevel::O2;
     llvm::ModulePassManager modulePassMgr = passBuilder->buildPerModuleDefaultPipeline(llvmOptLevel);
     
